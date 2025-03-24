@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Image Transformation</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.js"></script>
+    <script src="https://unpkg.com/mathlive/dist/mathlive.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen p-6 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Author Tag -->
+        <div class="flex justify-end mb-4">
+            <div class="flex items-center gap-2 text-gray-400 text-sm">
+                <span>Crafted with ⚡ by</span>
+                <a href="https://github.com/iwanibnoulouafi" target="_blank" class="hover:text-black transition-colors duration-200 font-medium">Iwan Ibnoulouafi</a>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="flex flex-col items-center space-y-6 pt-4 pb-2">
+            <div class="flex flex-col items-center space-y-4">
+                <h1 class="text-5xl md:text-6xl font-bold tracking-tight">
+                    Complex Image <span class="pixel-text">Transformation</span>
+                </h1>
+                <p class="text-xl text-gray-600 max-w-1xl text-center">
+                    Transform images through complex mathematical functions in real-time
+                </p>
+            </div>
+            <a href="https://github.com/yourusername/yourrepo" target="_blank" class="github-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View on GitHub
+            </a>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Canvas Card -->
+            <div class="flex-1">
+                <div class="card p-1 aspect-video" id="canva_parent"></div>
+            </div>
+
+            <!-- Controls Card -->
+            <div class="card w-80 lg:w-full p-6 space-y-6">
+                <div class="space-y-6">
+                    <!-- Image Upload -->
+                    <div class="space-y-3">
+                        <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Import Image</label>
+                        <div class="flex items-center gap-2">
+                            <label for="image-upload" class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg cursor-pointer hover:border-black transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-sm">Choose Image</span>
+                            </label>
+                        </div>
+                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                    </div>
+
+                    <!-- Equation Input -->
+                    <div class="space-y-3">
+                        <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Equation</label>
+                        <math-field class="formula w-full" id="input-formula">z^2</math-field>
+                    </div>
+
+                    <!-- Grid Density -->
+                    <div class="space-y-3">
+                        <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Grid Density</label>
+                        <div class="slider-container">
+                            <input type="range" id="pixel-step" min="30" max="150" value="100" step="1">
+                        </div>
+                        <div class="text-sm text-gray-500">Value: <span id="pixel-step-value">100</span></div>
+                    </div>
+
+                    <!-- Math Scale -->
+                    <div class="space-y-3">
+                        <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Math Scale</label>
+                        <div class="slider-container">
+                            <input type="range" id="math-step" min="0.2" max="5" value="1" step="0.1">
+                        </div>
+                        <div class="text-sm text-gray-500">Value: <span id="math-step-value">1.0</span></div>
+                    </div>
+
+                    <!-- Image Size -->
+                    <div class="space-y-3">
+                        <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Image Size</label>
+                        <div class="slider-container">
+                            <input type="range" id="image-size" min="100" max="400" value="200" step="10">
+                        </div>
+                        <div class="text-sm text-gray-500">Value: <span id="image-size-value">200</span></div>
+                    </div>
+                </div>
+
+                <!-- Show Original Image Toggle -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Show Original Image</label>
+                        <label class="switch">
+                            <input type="checkbox" id="show-original" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Preset Functions -->
+                <div class="space-y-3">
+                    <label class="font-semibold text-sm uppercase tracking-wider text-gray-600">Preset Functions</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="preset-button card p-3 text-left text-sm" data-equation="z^2"><span class="katex">z^2</span></button>
+                        <button class="preset-button card p-3 text-left text-sm" data-equation="1/z"><span class="katex">\frac{1}{z}</span></button>
+                        <button class="preset-button card p-3 text-left text-sm" data-equation="sqrt(z)"><span class="katex">\sqrt{z}</span></button>
+                        <button class="preset-button card p-3 text-left text-sm" data-equation="cos(z)"><span class="katex">\cos(z)</span></button>
+                        <button class="preset-button card p-3 text-left text-sm" data-equation="tan(z)"><span class="katex">\tan(z)</span></button>
+                        <button class="preset-button card p-3 text-left text-sm" data-equation="e^z"><span class="katex">e^z</span></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Separator -->
+        <div class="relative">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-gray-200"></div>
+            </div>
+            <div class="relative flex justify-center">
+                <span class="bg-white px-4 text-sm text-gray-500">More explanations !</span>
+            </div>
+        </div>
+
+        <!-- Explanation Section -->
+        <section class="space-y-6 max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-4">Understanding Complex Image Transformation</h2>
+            
+            <!-- Introduction Paragraph -->
+            <div class="max-w-1.5xl mx-auto">
+                <div class="card p-6 mb-8">
+                    <p class="text-gray-600 leading-relaxed">
+                        Complex functions can be hard to visualize and understand. This interactive playground transforms your images through mathematical functions, making complex analysis <strong>intuitive and engaging</strong>. By seeing how different functions affect your image in real-time, you can develop a deeper understanding of how complex functions work in a <em>visual and interactive way</em>.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Key Features Card -->
+                <div class="card p-6 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl">✨</span>
+                        <h3 class="text-xl font-bold">Key Features</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 italic">Discover the powerful tools at your disposal:</p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-xl">🎨</span>
+                            <span><strong>Real-time visualization</strong> of complex functions with instant feedback</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-xl">🖱️</span>
+                            <span><strong>Smooth drag-and-drop interface</strong> with live preview of transformations</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-xl">🌊</span>
+                            <span>Beautiful <strong>fade transitions</strong> between different mathematical operations</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-xl">📊</span>
+                            <span>Interactive <strong>grid system</strong> with adjustable density and scale</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-xl">⚙️</span>
+                            <span>Fully <strong>customizable</strong> mathematical parameters and image size</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- How to Use Card -->
+                <div class="card p-6 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl">🚀</span>
+                        <h3 class="text-xl font-bold">How to Use</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 italic">Follow these steps to master your complex image transformation:</p>
+                    <ol class="space-y-3 text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-base"><strong>1. </strong></span>
+                            <span><strong>Position your image</strong> by dragging it in the complex plane</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-base"><strong>2. </strong></span>
+                            <span>Choose from <em>preset functions</em> or enter your own mathematical expression</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-base"><strong>3. </strong></span>
+                            <span>Watch the <strong>real-time transformation</strong> of your image</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-base"><strong>4. </strong></span>
+                            <span>Fine-tune the visualization using the <em>adjustable controls</em></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-base"><strong>5. </strong></span>
+                            <span>Experiment with different <strong>image sizes</strong> and mathematical scales</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Technical Details Card -->
+                <div class="card p-6 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl">🧮</span>
+                        <h3 class="text-xl font-bold">Technical Details</h3>
+                    </div>
+                    <div class="space-y-3 text-gray-600">
+                        <p class="text-base">
+                            This tool leverages <strong>complex analysis</strong> to transform images through mathematical functions. Each pixel is treated as a complex number, allowing for sophisticated transformations of the entire image.
+                        </p>
+                        <div class="space-y-2 pt-3">
+                            <p class="font-semibold text-sm">Key Components:</p>
+                            <ul class="space-y-3 pt-1">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-xl">📐</span>
+                                    <span><strong>Complex Plane Mapping:</strong> Each pixel coordinates are mapped to complex numbers</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-xl">🔄</span>
+                                    <span><strong>Function Application:</strong> Mathematical functions are applied to transform these complex numbers</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-xl">🎯</span>
+                                    <span><strong>Real-time Processing:</strong> Efficient algorithms ensure smooth, immediate visual feedback</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-xl">⚡</span>
+                                    <span><strong>Optimized Rendering:</strong> Advanced techniques for smooth transitions and high performance</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Function to render LaTeX in buttons
+        function renderLatex() {
+            document.querySelectorAll('.preset-button .katex').forEach(element => {
+                katex.render(element.textContent, element, {
+                    throwOnError: false,
+                    displayMode: false
+                });
+            });
+        }
+
+        // Initial render
+        renderLatex();
+
+        // Show/Hide original image handler
+        document.getElementById('show-original').addEventListener('change', function(e) {
+            IMG1_OBJ.showOriginal = e.target.checked;
+        });
+
+        // Image upload handler
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const imagePath = URL.createObjectURL(file);
+                IMG1_OBJ.img = loadImage(imagePath, () => {IMG1_OBJ.setup()});
+            }
+        });
+
+        // Equation input handler
+        document.getElementById("input-formula").addEventListener('input', (event) => {
+            current_equation = event.target.getValue('ascii-math');
+            if (IMG1_OBJ && !IMG1_OBJ.isDragging) {
+                IMG1_OBJ.compute_output_image();
+            }
+        });
+
+        // Preset buttons handler
+        document.querySelectorAll('.preset-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.preset-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                button.classList.add('active');
+                
+                const equation = button.dataset.equation;
+                
+                const mathField = document.getElementById('input-formula');
+                mathField.setValue(equation);
+                
+                current_equation = equation;
+                
+                if (IMG1_OBJ && !IMG1_OBJ.isDragging) {
+                    IMG1_OBJ.compute_output_image();
+                }
+            });
+        });
+
+        // Set initial active state for z^2
+        document.querySelector('[data-equation="z^2"]').classList.add('active');
+    </script>
+</body>
+</html>
